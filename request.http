@@ -1,0 +1,5 @@
+### Revalidar caché del blog
+POST http://localhost:3000/api/revalidate
+Content-Type: application/json
+
+{"path": "/blog"}
