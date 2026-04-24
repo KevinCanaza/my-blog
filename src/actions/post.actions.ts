@@ -57,3 +57,34 @@ export async function deletePostAction(postId: string) {
     revalidatePath('/blog');
     redirect('/dashboard/posts');
 }
+
+export async function updatePostAction(
+    postId: string,
+    prevState: PostState,
+    formData: FormData
+): Promise<PostState> {
+    const user = await getCurrentUser();
+    if (!user) redirect('/login');
+
+    const validated = PostSchema.safeParse({
+        title: formData.get('title'),
+        excerpt: formData.get('excerpt'),
+        content: formData.get('content'),
+        published: formData.get('published') === 'true',
+    });
+    if (!validated.success) return { errors: validated.error.flatten().fieldErrors };
+
+    await prisma.post.update({
+        where: { id: postId, authorId: user.userId },
+        data: {
+            title: validated.data.title,
+            excerpt: validated.data.excerpt,
+            content: validated.data.content,
+            published: validated.data.published,
+        },
+    });
+
+    revalidatePath('/blog');
+    revalidatePath('/dashboard/posts');
+    redirect('/dashboard/posts');
+}

@@ -1,16 +1,24 @@
-interface EditPostProps{
-    params: Promise<{ id : string }>;
+import { getPostById } from '@/lib/post';
+import { getSession } from '@/lib/auth';
+import { notFound, redirect } from 'next/navigation';
+import EditPostForm from '@/components/EditPostForm';
+
+interface EditPostPageProps {
+    params: Promise<{ id: string }>;
 }
 
-async function EditPostPage({ params }: EditPostProps) {
+export default async function EditPostPage({ params }: EditPostPageProps) {
     const { id } = await params;
-    console.log({params})
-  return (
-    <main className={"min-h-screen p-8"}>
-      <h1 className={"text-3xl font-bold"}>Editar Post</h1>
-        <p className={"mt-4 text-gray-600"}>Editando post ID: {id}</p>
-    </main>
-  );
-}
+    const session = await getSession();
+    const post = await getPostById(id);
 
-export default EditPostPage;
+    if (!post) notFound();
+    if (post.authorId !== session!.userId) redirect('/dashboard/posts');
+
+    return (
+        <div className="max-w-2xl">
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Editar post</h1>
+            <EditPostForm post={post} />
+        </div>
+    );
+}

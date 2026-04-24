@@ -1,22 +1,26 @@
 "use client"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 interface LikeButtonProps {
+    postId: string;
     initialLikes?: number;
 }
-export default function LikeButton({ initialLikes = 0 }: LikeButtonProps) {
-    const [likes,setLikes] = useState(initialLikes);
+export default function LikeButton({ postId, initialLikes = 0 }: LikeButtonProps) {
+    const [likes, setLikes] = useState(initialLikes);
     const [liked, setLiked] = useState(false);
+    const storageKey = `liked-${postId}`;
+
+    useEffect(() => {
+        const savedLiked = localStorage.getItem(storageKey) === 'true';
+        setLiked(savedLiked);
+        if (savedLiked) setLikes(initialLikes + 1);
+    }, [storageKey, initialLikes]);
 
     function handleLike() {
-        if (liked) {
-            setLikes(likes - 1);
-            setLiked(false);
-        }else{
-            setLikes(likes + 1);
-            setLiked(true);
-        }
-
+        const newLiked = !liked;
+        setLiked(newLiked);
+        setLikes(newLiked ? likes + 1 : likes - 1);
+        localStorage.setItem(storageKey, String(newLiked));
     }
 
     return (

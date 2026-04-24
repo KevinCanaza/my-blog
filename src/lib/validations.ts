@@ -26,7 +26,7 @@ export const PostSchema = z.object({
         .max(300,"El resumen no piuede tener mas de 300 caracteres"),
     content: z.string()
         .min(50, "el contenido debo tener al menos 50 caracteres"),
-    publisher: z.boolean().default(false)
+    published: z.boolean().default(false)
 })
 
 export type RegisterInput = z.infer<typeof RegisterSchema>

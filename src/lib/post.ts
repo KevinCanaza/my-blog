@@ -1,16 +1,17 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma'
 import { Post, User } from "@/generated/prisma/client"
 
 export type PostWithAuthor = Post & {
-    author: Pick<User, 'id' | 'name' | 'email'>;
-};
+    author: Pick<User, 'id' | 'name' | 'email'>
+}
 
-export async function getPosts():  Promise<PostWithAuthor[]>  {
+export async function getPosts(): Promise<PostWithAuthor[]> {
     return prisma.post.findMany({
         where: { published: true },
         orderBy: { createdAt: 'desc' },
-        include: { author: { select: { id: true, name: true, email: true } } },
-    });
+        include: { author: { select: { id: true, name: true,
+                    email: true } } },
+    })
 }
 
 export async function getPostBySlug(slug: string) {
@@ -20,10 +21,12 @@ export async function getPostBySlug(slug: string) {
     });
 }
 
-export async function getPostsByAuthor(authorId: string) {
+
+export async function getPostsByAuthor(authorId: string):
+    Promise<PostWithAuthor[]> {
     return prisma.post.findMany({
         where: { authorId },
         orderBy: { createdAt: 'desc' },
         include: { author: { select: { id: true, name: true, email: true } } },
-    });
+    })
 }

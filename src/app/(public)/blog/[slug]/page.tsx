@@ -35,7 +35,7 @@ export default async function PostPage({ params }:PostPageProps) {
             {post.content}
         </div>
         <div className="mt-8 pt-8 border-t border-gray-200">
-            <LikeButton initialLikes={12}/>
+            <LikeButton postId={post.id} initialLikes={0}/>
         </div>
 
     </main>

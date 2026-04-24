@@ -14,7 +14,7 @@ function RegisterPage(){
                 </div>
             )}
 
-            <form action="{action}" className={"space-y-4"}>
+            <form action={action} className={"space-y-4"}>
                 <div>
                     <label className={"block text-sm font-medium text-gray-700 mb-1"}>Nombre</label>
                     <input type="text" name={"name"} placeholder={"tu nombre"}
